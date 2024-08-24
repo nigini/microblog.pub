@@ -15,6 +15,7 @@ from itsdangerous import URLSafeTimedSerializer
 from loguru import logger
 from mistletoe import markdown  # type: ignore
 
+from app._version import VERSION
 from app.customization import _CUSTOM_ROUTES
 from app.customization import _StreamVisibilityCallback
 from app.customization import default_stream_visibility_callback
@@ -25,7 +26,6 @@ ROOT_DIR = Path().parent.resolve()
 
 _CONFIG_FILE = os.getenv("MICROBLOGPUB_CONFIG_FILE", "profile.toml")
 
-from app._version import VERSION
 
 try:
     from app._version import VERSION_COMMIT  # type: ignore
