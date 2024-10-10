@@ -866,7 +866,7 @@ async def send_update(
         "summary": outbox_object.summary,
         "inReplyTo": outbox_object.in_reply_to,
         "sensitive": outbox_object.sensitive,
-        "attachment": outbox_object.ap_object["attachment"],
+        "attachment": outbox_object.ap_object.get("attachment") or [],
         "updated": updated,
     }
     if outbox_object.ap_type == "Article" and name:

@@ -1,14 +1,10 @@
 import json
 
 import pytest
-from fastapi.responses import JSONResponse
 from fastapi.testclient import TestClient
 from sqlalchemy.orm import Session
 
-from app import models
-from app.config import generate_csrf_token
-from app.config import session_serializer
-from tests.utils import setup_auth_access_token
+from tests.utils import setup_auth_access_token, setup_outbox_note
 
 
 @pytest.mark.asyncio
@@ -38,3 +34,37 @@ async def test_micropub_create(
 
     # assert the new note is actually at the location
     assert "Hello, World!" in res.text
+
+
+@pytest.mark.asyncio
+async def test_micropub_update(
+    client: TestClient,
+    async_db_session: Session,
+):
+    # create and confirm note to update
+    hello_note = setup_outbox_note("123hello123")
+
+    note_path = f"/o/{hello_note.public_id}"
+    res = client.get(note_path)
+
+    assert "123hello123" in res.text
+    assert "potato" not in res.text
+
+    # get ready to update
+    await setup_auth_access_token(async_db_session)
+
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer accesstoken",
+    }
+
+    body = { "action":"update","type": ["h-entry"], "url":hello_note.ap_id, "replace": { "content": "potato"}}
+    
+    client.post("/micropub", data=json.dumps(body), headers=headers)
+
+    # confirm update
+    note_path = f"/o/{hello_note.public_id}"
+    response = client.get(note_path)
+
+    assert "123hello123" not in response.text
+    assert "potato" in response.text

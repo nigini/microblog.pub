@@ -290,7 +290,7 @@ async def setup_auth_access_token(db: Session):
         access_token="accesstoken",
         refresh_token="refreshtoken",
         expires_in=3600,
-        scope="create",
+        scope="create update",
     )
     db.add(access_token)
     await db.commit()
