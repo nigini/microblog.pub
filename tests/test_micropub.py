@@ -29,7 +29,7 @@ async def test_micropub_create(
     assert response.status_code is 201
     assert "location" in response.headers
 
-    new_path = f"/o/{response.headers.get("Location").split("/")[-1]}"
+    new_path = f"/o/{response.headers.get('Location').split('/')[-1]}"
     res = client.get(new_path)
 
     # assert the new note is actually at the location
@@ -58,8 +58,13 @@ async def test_micropub_update(
         "Authorization": "Bearer accesstoken",
     }
 
-    body = { "action":"update","type": ["h-entry"], "url":hello_note.ap_id, "replace": { "content": "potato"}}
-    
+    body = {
+        "action": "update",
+        "type": ["h-entry"],
+        "url": hello_note.ap_id,
+        "replace": {"content": "potato"},
+    }
+
     client.post("/micropub", data=json.dumps(body), headers=headers)
 
     # confirm update
