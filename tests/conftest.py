@@ -1,3 +1,7 @@
+import os
+
+os.environ["MICROBLOGPUB_CONFIG_FILE"] = "tests.toml"
+
 from typing import Generator
 
 import pytest
