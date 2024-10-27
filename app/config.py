@@ -15,6 +15,7 @@ from itsdangerous import URLSafeTimedSerializer
 from loguru import logger
 from mistletoe import markdown  # type: ignore
 
+from app._version import VERSION
 from app.customization import _CUSTOM_ROUTES
 from app.customization import _StreamVisibilityCallback
 from app.customization import default_stream_visibility_callback
@@ -25,12 +26,13 @@ ROOT_DIR = Path().parent.resolve()
 
 _CONFIG_FILE = os.getenv("MICROBLOGPUB_CONFIG_FILE", "profile.toml")
 
-VERSION_COMMIT = "dev"
 
 try:
     from app._version import VERSION_COMMIT  # type: ignore
 except ImportError:
     VERSION_COMMIT = get_version_commit()
+
+VERSION += "+{}".format(VERSION_COMMIT)
 
 # Force reloading cache when the CSS is updated
 CSS_HASH = "none"
@@ -69,7 +71,6 @@ def set_moved_to(moved_to: str) -> None:
     MOVED_TO_FILE.write_text(moved_to)
 
 
-VERSION = f"2.0.0+{VERSION_COMMIT}"
 USER_AGENT = f"microblogpub/{VERSION}"
 AP_CONTENT_TYPE = "application/activity+json"
 
