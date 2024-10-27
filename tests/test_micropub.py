@@ -4,7 +4,8 @@ import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy.orm import Session
 
-from tests.utils import setup_auth_access_token, setup_outbox_note
+from tests.utils import setup_auth_access_token
+from tests.utils import setup_outbox_note
 
 
 @pytest.mark.asyncio
@@ -23,10 +24,8 @@ async def test_micropub_create(
     body = {"type": ["h-entry"], "properties": {"content": ["Hello, World!"]}}
     response = client.post("/micropub", data=json.dumps(body), headers=headers)
 
-    data = response.json()
-
     # assert success and the location of the new note
-    assert response.status_code is 201
+    assert response.status_code == 201
     assert "location" in response.headers
 
     new_path = f"/o/{response.headers.get('Location').split('/')[-1]}"

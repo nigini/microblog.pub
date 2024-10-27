@@ -1,8 +1,11 @@
-from fastapi.testclient import TestClient
 from unittest.mock import MagicMock
 
+from fastapi.testclient import TestClient
+
+from app.customization import _CUSTOM_ROUTES
+from app.customization import get_custom_router
+from app.customization import register_html_page
 from app.main import app
-from app.customization import get_custom_router, register_html_page, _CUSTOM_ROUTES
 
 
 def test_html_route(client: TestClient) -> None:

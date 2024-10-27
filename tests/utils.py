@@ -8,7 +8,6 @@ import httpx
 import respx
 from sqlalchemy.orm import Session
 
-
 from app import activitypub as ap
 from app import actor
 from app import httpsig
