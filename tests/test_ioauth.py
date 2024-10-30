@@ -1,6 +1,6 @@
 import pytest
 from fastapi.testclient import TestClient
-from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.config import generate_csrf_token
 from app.config import session_serializer
@@ -30,7 +30,7 @@ def test_oauth_registration(
 @pytest.mark.asyncio
 async def test_oauth_authorize(
     client: TestClient,
-    async_db_session: Session,
+    async_db_session: AsyncSession,
 ):
     # test that when logged in, we can see the authorize app page with all the relevant good bits
     await setup_auth_application_client(async_db_session)
@@ -68,7 +68,7 @@ async def test_oauth_authorize(
 @pytest.mark.asyncio
 async def test_oauth_access_token(
     client: TestClient,
-    async_db_session: Session,
+    async_db_session: AsyncSession,
 ):
     # test that we can get an access token
     await setup_auth_auth_token(async_db_session)

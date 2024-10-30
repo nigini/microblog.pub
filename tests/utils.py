@@ -6,7 +6,6 @@ from uuid import uuid4
 import fastapi
 import httpx
 import respx
-from sqlalchemy.orm import Session
 
 from app import activitypub as ap
 from app import actor
@@ -251,11 +250,11 @@ def run_process_next_incoming_activity() -> None:
     run_async(_process_next_incoming_activity)
 
 
-async def setup_auth_application_client(db: Session):
+async def setup_auth_application_client(db: AsyncSession):
     # adds auth app client to db
     client = models.OAuthClient(
         client_name="testclient",
-        redirect_uris="testuri",
+        redirect_uris=["testuri"],
         client_id="testclientid",
         client_secret="testclientsecret",
     )
@@ -264,7 +263,7 @@ async def setup_auth_application_client(db: Session):
     await db.commit()
 
 
-async def setup_auth_auth_token(db: Session):
+async def setup_auth_auth_token(db: AsyncSession):
     # adds authorized access token to DB
     await setup_auth_application_client(db)
     auth_request = models.IndieAuthAuthorizationRequest(
@@ -277,11 +276,10 @@ async def setup_auth_auth_token(db: Session):
     )
 
     db.add(auth_request)
-
     await db.commit()
 
 
-async def setup_auth_access_token(db: Session):
+async def setup_auth_access_token(db: AsyncSession):
     # adds authorized access token to DB
     await setup_auth_auth_token(db)
     access_token = models.IndieAuthAccessToken(
