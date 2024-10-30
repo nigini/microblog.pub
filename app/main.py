@@ -87,13 +87,13 @@ _RESIZED_CACHE: MutableMapping[tuple[str, int], tuple[bytes, str, Any]] = LFUCac
 
 # TODO(ts):
 # Next:
+# - CustomMiddleware??? Check is issues with Starlette were resolved!!!
 # - self-destruct + move support and actions/tasks for
 # - doc for prune/move/delete
 # - fix issue with followers from a blocked server (skip it?)
 # - allow to share old notes
 # - only show 10 most recent threads in DMs
 # - prevent double accept/double follow
-# - UI support for updating posts
 # - indieauth tweaks
 # - support update post with history?
 
@@ -102,7 +102,7 @@ class CustomMiddleware:
     """Raw ASGI middleware as using starlette base middleware causes issues
     with both:
      - Jinja2: https://github.com/encode/starlette/issues/472
-     - async SQLAchemy: https://github.com/tiangolo/fastapi/issues/4719
+     - async SQLAlchemy: https://github.com/tiangolo/fastapi/issues/4719
     """
 
     def __init__(

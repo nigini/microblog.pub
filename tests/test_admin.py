@@ -3,12 +3,10 @@ import typing
 import starlette
 from fastapi.testclient import TestClient
 
+from app import activitypub as ap
 from app.config import generate_csrf_token
 from app.main import app
 from tests.utils import generate_admin_session_cookies
-
-from app import activitypub as ap
-
 
 
 def test_admin_endpoints_are_authenticated(client: TestClient) -> None:
@@ -45,5 +43,5 @@ def test_public_works_authenticated(client: TestClient) -> None:
         follow_redirects=False,
     )
     assert response.status_code == 302
-    resp = client.get("/",cookies=generate_admin_session_cookies())
+    resp = client.get("/", cookies=generate_admin_session_cookies())
     assert resp.status_code == 200

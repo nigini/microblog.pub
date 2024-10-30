@@ -1,9 +1,7 @@
 import pytest
-from fastapi.responses import JSONResponse
 from fastapi.testclient import TestClient
-from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
 
-from app import models
 from app.config import generate_csrf_token
 from app.config import session_serializer
 from tests.utils import setup_auth_application_client
@@ -32,7 +30,7 @@ def test_oauth_registration(
 @pytest.mark.asyncio
 async def test_oauth_authorize(
     client: TestClient,
-    async_db_session: Session,
+    async_db_session: AsyncSession,
 ):
     # test that when logged in, we can see the authorize app page with all the relevant good bits
     await setup_auth_application_client(async_db_session)
@@ -63,14 +61,14 @@ async def test_oauth_authorize(
         cookies=logged_in_cookie,
         data=confirmation,
     )
-    assert response.status_code is 200
+    assert response.status_code == 200
     assert "code=" in response.headers.get("refresh")
 
 
 @pytest.mark.asyncio
 async def test_oauth_access_token(
     client: TestClient,
-    async_db_session: Session,
+    async_db_session: AsyncSession,
 ):
     # test that we can get an access token
     await setup_auth_auth_token(async_db_session)
@@ -81,11 +79,10 @@ async def test_oauth_access_token(
         "redirect_uri": "testuri",
     }
 
-    logged_in_cookie = {"session": session_serializer.dumps({"is_logged_in": True})}
     response = client.post("/token", data=token_request)
 
     data = response.json()
-    assert response.status_code is 200
+    assert response.status_code == 200
     assert "access_token" in data
     assert "refresh_token" in data
 

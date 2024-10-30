@@ -1,16 +1,15 @@
-import json
-
 import pytest
 from fastapi.testclient import TestClient
-from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
 
-from tests.utils import setup_auth_access_token, setup_outbox_note
+from tests.utils import setup_auth_access_token
+from tests.utils import setup_outbox_note
 
 
 @pytest.mark.asyncio
 async def test_micropub_create(
     client: TestClient,
-    async_db_session: Session,
+    async_db_session: AsyncSession,
 ):
     # test that we create a note via micropub
     await setup_auth_access_token(async_db_session)
@@ -21,15 +20,13 @@ async def test_micropub_create(
     }
 
     body = {"type": ["h-entry"], "properties": {"content": ["Hello, World!"]}}
-    response = client.post("/micropub", data=json.dumps(body), headers=headers)
-
-    data = response.json()
+    response = client.post("/micropub", json=body, headers=headers)
 
     # assert success and the location of the new note
-    assert response.status_code is 201
+    assert response.status_code == 201
     assert "location" in response.headers
 
-    new_path = f"/o/{response.headers.get("Location").split("/")[-1]}"
+    new_path = f"/o/{response.headers.get('Location').split('/')[-1]}"
     res = client.get(new_path)
 
     # assert the new note is actually at the location
@@ -39,7 +36,7 @@ async def test_micropub_create(
 @pytest.mark.asyncio
 async def test_micropub_update(
     client: TestClient,
-    async_db_session: Session,
+    async_db_session: AsyncSession,
 ):
     # create and confirm note to update
     hello_note = setup_outbox_note("123hello123")
@@ -58,9 +55,14 @@ async def test_micropub_update(
         "Authorization": "Bearer accesstoken",
     }
 
-    body = { "action":"update","type": ["h-entry"], "url":hello_note.ap_id, "replace": { "content": "potato"}}
-    
-    client.post("/micropub", data=json.dumps(body), headers=headers)
+    body = {
+        "action": "update",
+        "type": ["h-entry"],
+        "url": hello_note.ap_id,
+        "replace": {"content": "potato"},
+    }
+
+    client.post("/micropub", json=body, headers=headers)
 
     # confirm update
     note_path = f"/o/{hello_note.public_id}"

@@ -12,6 +12,7 @@ Instances in the wild:
  - [blog.joaocosta.eu](https://blog.joaocosta.eu/)
  - [bw3.dev](https://bw3.dev/)
  - [blog.nigini.me](https://blog.nigini.me)
+ - [chrichri.ween.de](chrichri.ween.de)
 
 
 ## Features

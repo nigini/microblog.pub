@@ -1,7 +1,4 @@
 import os
-
-os.environ["MICROBLOGPUB_CONFIG_FILE"] = "tests.toml"
-
 from typing import Generator
 
 import pytest
@@ -14,6 +11,8 @@ from app.database import async_session
 from app.database import engine
 from app.main import app
 from tests.factories import _Session
+
+os.environ["MICROBLOGPUB_CONFIG_FILE"] = "tests.toml"
 
 
 @pytest_asyncio.fixture
